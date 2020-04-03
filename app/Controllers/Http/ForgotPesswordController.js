@@ -1,58 +1,62 @@
-'use strict'
-const User = use('App/Models/User')
-const moment = require('moment')
-const crypto = require('crypto')
-const Mail = use('Mail')
+const User = use("App/Models/User");
+const moment = require("moment");
+const crypto = require("crypto");
+
+const Mail = use("Mail");
 
 class ForgotPesswordController {
   async store({ request, response }) {
-    const email = request.input('email');
+    const email = request.input("email");
     try {
-      const user = await User.findByOrFail('email', email)
+      const user = await User.findByOrFail("email", email);
 
-      user.token = crypto.randomBytes(10).toString('hex')
-      user.token_created_at = new Date()
+      user.token = crypto.randomBytes(10).toString("hex");
+      user.token_created_at = new Date();
 
-      await user.save()
+      await user.save();
       await Mail.send(
-        ['emails.forgot_password'],
-        { email, token: user.token, },
-        message => {
+        ["emails.forgot_password"],
+        { email, token: user.token },
+        (message) => {
           message
             .to(user.email)
-            .from('Adonis@Team')
-            .subject('Password recovery')
+            .from("Adonis@Team")
+            .subject("Password recovery");
         }
-      )
-
+      );
     } catch (error) {
-      return response.status(error.status).send({ error: { message: 'Email não existe' } })
+      return response
+        .status(error.status)
+        .send({ error: { message: "Email não existe" } });
     }
-
   }
 
   async update({ request, response }) {
     try {
       const { token, password } = request.all();
 
-      const user = await User.findByOrFail('token', token);
+      const user = await User.findByOrFail("token", token);
 
       const tokenExpired = moment()
-        .subtract('2', 'days')
-        .isAfter(user.token_created_at)
+        .subtract("2", "days")
+        .isAfter(user.token_created_at);
 
-      if (tokenExpired) return response.status(401).send({ error: { message: 'Token expirou' } })
+      if (tokenExpired)
+        return response
+          .status(401)
+          .send({ error: { message: "Token expirou" } });
 
-      user.token = null
-      user.token_created_at = null
-      user.password = password
+      user.token = null;
+      user.token_created_at = null;
+      user.password = password;
 
-      await user.save()
-
+      await user.save();
     } catch (error) {
-      return response.status(error.status).send({ error: { message: 'Algo deu errado', message: error.message } })
+      return response.status(error.status).send({
+        error: { message: "Algo deu errado", message: error.message },
+      });
     }
   }
 }
 
-module.exports = ForgotPesswordController
+module.exports = ForgotPesswordController;

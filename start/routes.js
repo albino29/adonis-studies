@@ -1,9 +1,8 @@
-'use strict'
-const Route = use('Route')
+const Route = use("Route");
 
-Route.post('user', 'UserController.store')
-Route.get('user', 'UserController.list')
+Route.post("user", "UserController.store");
+Route.get("user", "UserController.list");
 
-Route.post('login', 'SessionController.store')
-Route.post('passwords', 'ForgotPesswordController.store')
-Route.put('passwords', 'ForgotPesswordController.update')
+Route.post("login", "SessionController.store");
+Route.post("passwords", "ForgotPesswordController.store");
+Route.put("passwords", "ForgotPesswordController.update");
