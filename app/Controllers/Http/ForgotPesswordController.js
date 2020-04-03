@@ -53,7 +53,7 @@ class ForgotPesswordController {
       await user.save();
     } catch (error) {
       return response.status(error.status).send({
-        error: { message: "Algo deu errado", message: error.message },
+        error: { message: "Algo deu errado", error: error.message },
       });
     }
   }
