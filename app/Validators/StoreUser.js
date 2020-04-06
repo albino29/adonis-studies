@@ -1,3 +1,4 @@
+const Antl = use('Antl');
 class StoreUser {
   get validateAll() {
     return true;
@@ -9,6 +10,10 @@ class StoreUser {
       email: 'required|email|unique:users',
       password: 'required|confirmed',
     };
+  }
+
+  get messages() {
+    return Antl.list('validation');
   }
 }
 
